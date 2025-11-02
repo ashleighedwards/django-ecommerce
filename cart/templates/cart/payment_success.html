@@ -7,5 +7,6 @@
     <h2>Thank you! Your payment was successful.</h2>
     <p>Your order total was £{{ order.total }}</p>
     <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+    <a href="{% url 'orders:order_list' %}" class="btn btn-primary mt-3">See orders</a>
 </div>
 {% endblock %}

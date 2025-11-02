@@ -81,6 +81,10 @@ SESSION_COOKIE_AGE = 3600  # 1 hour
 #expire when the browser closes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/orders/'  # where user goes after login
+LOGOUT_REDIRECT_URL = '/store/'  # optional
+
 SITE_ID = 1
 
 STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")

@@ -9,42 +9,6 @@ from django.db import transaction
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# Wrap checkout in a transaction so all DB writes happen together
-# If something fails mid-way, Django rolls everything back automatically
-@transaction.atomic
-def checkout(request):
-    #get cart data from session (session is per-user, per-browser)
-    cart = request.session.get('cart', {})
-
-    if not cart:
-        return redirect('store:product_list')
-
-    #create a new order
-    order = Order.objects.create(total=0)
-    total = Decimal(0)
-
-    for product_id, quantity in cart.items():
-        product = Product.objects.get(id=product_id)
-        product.stock = max(product.stock - quantity, 0)
-        subtotal = product.price * quantity
-
-        OrderItem.objects.create(
-            order=order,
-            product=product,
-            quantity=quantity,
-            subtotal=subtotal
-        )
-        total += subtotal
-
-    order.total = total
-    order.save()
-
-    # Clear cart
-    request.session['cart'] = {}
-    request.session.modified = True
-
-    return redirect('orders:order_list')  # use namespaced URL
-
 def cart_view(request):
     cart = request.session.get('cart', {})
     products = Product.objects.filter(id__in=cart.keys())
@@ -103,11 +67,17 @@ def payment_success(request):
     cart = request.session.get('cart', {})
     if not cart:
         return redirect('store:product_list')
+    if not request.user.is_authenticated:
+        # Optionally redirect or raise an error if payment success is hit without a user
+        return redirect('accounts:login')  # adjust to your login URL
 
     products = Product.objects.filter(id__in=cart.keys())
     total = sum(product.price * cart[str(product.id)] for product in products)
 
-    order = Order.objects.create(total=total)
+    order = Order.objects.create(
+        user=request.user,
+        total=total
+    )
 
     for product in products:
         quantity = cart[str(product.id)]
