@@ -5,6 +5,19 @@
 
 {% block content %}
 <h2 class="text-center mb-5">Products</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div></div>
+    <div>
+        <label for="sort-select" class="me-2 fw-semibold">Sort by:</label>
+        <select id="sort-select" class="form-select d-inline w-auto">
+            <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name ↑</option>
+            <option value="name_desc" {% if current_sort == 'name_desc' %}selected{% endif %}>Name ↓</option>
+            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Price ↑</option>
+            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Price ↓</option>
+        </select>
+    </div>
+</div>
+
 <div class="row">
     {% for product in products %}
     <div class="col-md-3 mb-4">
@@ -17,16 +30,43 @@
                 <p class="fw-bold mb-2">£{{ product.price }}</p>
                 {% if product.stock > 0 %}
                     <button class="btn btn-primary w-100"
-                       onclick="addToCart({{ product.id }}, this)"
-                    >Add to Cart</button>
+                            onclick="addToCart({{ product.id }}, this)">
+                        Add to Cart
+                    </button>
                 {% else %}
-                    <button class="btn btn-secondary" disabled>Out of Stock</button>
+                    <button class="btn btn-secondary w-100" disabled>Out of Stock</button>
                 {% endif %}
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}&sort={{ current_sort }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}&sort={{ current_sort }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}&sort={{ current_sort }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
 {% endblock %}
 
 {% block extra_js %}
