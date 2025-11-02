@@ -1,13 +1,29 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Your Order!{% endblock %}
 
 {% block content %}
+<div class="text-center mt-5">
+    <h2>Total: £{{ total }}</h2>
 
-<h2>Total: £{{ total }}</h2>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Pay with Test Card</button>
-</form>
+    <form id="payment-form" class="mx-auto" style="max-width:400px;">
+        <div id="card-element" class="mb-3"><!-- Stripe Card Element will appear here --></div>
+        <button type="submit" id="submit" class="btn btn-success w-100">
+            Pay £{{ total }}
+        </button>
+    </form>
 
+    <div id="payment-message" class="text-danger mt-2"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripePublicKey = "{{ STRIPE_PUBLIC_KEY }}";
+        const csrfToken = "{{ csrf_token }}";
+        const totalAmount = {{ total }};
+    </script>
+    <script src="{% static 'cart/js/payment.js' %}"></script>
 {% endblock %}

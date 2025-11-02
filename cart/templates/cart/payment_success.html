@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Payment successful!{% endblock %}
+{% block title %}Payment Successful{% endblock %}
 
 {% block content %}
-
 <div class="text-center mt-5">
-    <h2 class="text-success">Payment Successful!</h2>
-    <p>Your payment of £{{ total|default:"0.00" }} was completed in test mode.</p>
+    <h2>Thank you! Your payment was successful.</h2>
+    <p>Your order total was £{{ order.total }}</p>
     <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">Continue Shopping</a>
 </div>
-
 {% endblock %}

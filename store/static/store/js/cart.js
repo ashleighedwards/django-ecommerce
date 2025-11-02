@@ -8,7 +8,11 @@ function addToCart(productId, button) {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('cart-count').textContent = data.cart_count;
+        const badge = document.getElementById('cart-count');
+        if (badge) {
+            badge.textContent = data.cart_count;
+        }
+
 
         button.textContent = "Added!";
         setTimeout(() => {

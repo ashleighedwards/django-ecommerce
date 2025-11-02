@@ -1,5 +1,6 @@
 import stripe
 from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from decimal import Decimal
 from orders.models import Order, OrderItem
@@ -77,44 +78,52 @@ def remove_from_cart(request, product_id):
 
 def test_payment(request):
     cart = request.session.get('cart', {})
-
     if not cart:
         return redirect('store:product_list')
 
     products = Product.objects.filter(id__in=cart.keys())
-    total = Decimal(0)
-    for product in products:
-        quantity = cart[str(product.id)]
-        total += product.price * quantity
-
+    total = sum(product.price * cart[str(product.id)] for product in products)
     amount_pence = int(total * 100)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         intent = stripe.PaymentIntent.create(
             amount=amount_pence,
             currency='gbp',
-            payment_method_types=["card"],
+            payment_method_types=['card'],
+        )
+        return JsonResponse({'client_secret': intent.client_secret})
+
+    return render(request, 'cart/test_payment.html', {
+        'total': total,
+        'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY
+    })
+
+@transaction.atomic
+def payment_success(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        return redirect('store:product_list')
+
+    products = Product.objects.filter(id__in=cart.keys())
+    total = sum(product.price * cart[str(product.id)] for product in products)
+
+    order = Order.objects.create(total=total)
+
+    for product in products:
+        quantity = cart[str(product.id)]
+        subtotal = product.price * quantity
+
+        product.stock = max(product.stock - quantity, 0)
+        product.save()
+
+        OrderItem.objects.create(
+            order=order,
+            product=product,
+            quantity=quantity,
+            subtotal=subtotal
         )
 
-        with transaction.atomic():
-            order = Order.objects.create(total=total)
-            for product in products:
-                quantity = cart[str(product.id)]
-                subtotal = product.price * quantity
+    request.session['cart'] = {}
+    request.session.modified = True
 
-                product.stock = max(product.stock - quantity, 0)
-                product.save()
-
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=quantity,
-                    subtotal=subtotal
-                )
-
-            request.session['cart'] = {}
-            request.session.modified = True
-
-        return render(request, 'cart/payment_success.html', {'total': total})
-
-    return render(request, 'cart/test_payment.html', {'total': total})
+    return render(request, 'cart/payment_success.html', {'order': order})

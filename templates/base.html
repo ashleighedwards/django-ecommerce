@@ -27,12 +27,11 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cart:cart_view' %}">Cart
-                            {% if request.session.cart %}
-                                <span id="cart-count" class="badge bg-primary">
-                                    {{ request.session.cart|length }}
-                                </span>
-                            {% endif %}
+                            <span id="cart-count" class="badge bg-primary">
+                                {{ request.session.cart|length|default:"0" }}
+                            </span>
                         </a>
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'orders:order_list' %}">Orders</a>
@@ -52,6 +51,8 @@
     </footer>
 
     {% bootstrap_javascript %}
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="{% static 'store/js/cart.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
