@@ -11,6 +11,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     # Automatically stores the date/time when a product is first created
     created_at = models.DateTimeField(auto_now_add=True)
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name

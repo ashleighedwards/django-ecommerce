@@ -1,5 +1,9 @@
 from django.contrib import admin
 from .models import Product
 
-# Register the Product model so it shows up in Django's admin dashboard.
-admin.site.register(Product)
+#register the Product model
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id','name', 'price', 'stock', 'description')
+    list_editable = ('price','stock',)
+    search_fields = ('name',)

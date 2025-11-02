@@ -27,13 +27,13 @@
                             <tr>
                                 <td>{{ item.product.name }}</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>${{ item.product.price }}</td>
-                                <td>${{ item.subtotal }}</td>
+                                <td>£{{ item.product.price }}</td>
+                                <td>£{{ item.subtotal }}</td>
                             </tr>
                             {% endfor %}
                             <tr class="fw-bold">
                                 <td colspan="3" class="text-end">Total</td>
-                                <td>${{ order.total }}</td>
+                                <td>£{{ order.total }}</td>
                             </tr>
                         </tbody>
                     </table>

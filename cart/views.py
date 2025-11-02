@@ -1,22 +1,30 @@
+import stripe
+from django.conf import settings
 from django.shortcuts import redirect, render
-from django.contrib import messages
 from decimal import Decimal
-from orders.models import Order, OrderItem  # import from orders app
+from orders.models import Order, OrderItem
 from store.models import Product
+from django.db import transaction
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+# Wrap checkout in a transaction so all DB writes happen together
+# If something fails mid-way, Django rolls everything back automatically
+@transaction.atomic
 def checkout(request):
+    #get cart data from session (session is per-user, per-browser)
     cart = request.session.get('cart', {})
 
     if not cart:
-        messages.error(request, "Your cart is empty!")
-        return redirect('product_list')
+        return redirect('store:product_list')
 
-    # Create a new order
+    #create a new order
     order = Order.objects.create(total=0)
-
     total = Decimal(0)
+
     for product_id, quantity in cart.items():
         product = Product.objects.get(id=product_id)
+        product.stock = max(product.stock - quantity, 0)
         subtotal = product.price * quantity
 
         OrderItem.objects.create(
@@ -34,7 +42,6 @@ def checkout(request):
     request.session['cart'] = {}
     request.session.modified = True
 
-    messages.success(request, f"Order #{order.id} placed successfully!")
     return redirect('orders:order_list')  # use namespaced URL
 
 def cart_view(request):
@@ -67,3 +74,47 @@ def remove_from_cart(request, product_id):
         request.session.modified = True
 
     return redirect('cart:cart_view')
+
+def test_payment(request):
+    cart = request.session.get('cart', {})
+
+    if not cart:
+        return redirect('store:product_list')
+
+    products = Product.objects.filter(id__in=cart.keys())
+    total = Decimal(0)
+    for product in products:
+        quantity = cart[str(product.id)]
+        total += product.price * quantity
+
+    amount_pence = int(total * 100)
+
+    if request.method == "POST":
+        intent = stripe.PaymentIntent.create(
+            amount=amount_pence,
+            currency='gbp',
+            payment_method_types=["card"],
+        )
+
+        with transaction.atomic():
+            order = Order.objects.create(total=total)
+            for product in products:
+                quantity = cart[str(product.id)]
+                subtotal = product.price * quantity
+
+                product.stock = max(product.stock - quantity, 0)
+                product.save()
+
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                    subtotal=subtotal
+                )
+
+            request.session['cart'] = {}
+            request.session.modified = True
+
+        return render(request, 'cart/payment_success.html', {'total': total})
+
+    return render(request, 'cart/test_payment.html', {'total': total})

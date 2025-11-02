@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-5">Products</h2>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text text-muted">{{ product.description }}</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+                <p class="fw-bold mb-2">£{{ product.price }}</p>
+                {% if product.stock > 0 %}
+                    <button class="btn btn-primary w-100"
+                       onclick="addToCart({{ product.id }}, this)"
+                    >Add to Cart</button>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'store/js/cart.js' %}"></script>
+{% endblock %}

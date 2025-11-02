@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -74,11 +75,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-# Make sessions last 1 hour (3600 seconds)
+#sessions last 1 hour
 SESSION_COOKIE_AGE = 3600  # 1 hour
 
-# Optional: expire when the browser closes
+#expire when the browser closes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+SITE_ID = 1
 
 
 # Database
@@ -132,3 +135,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
