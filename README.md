@@ -1,12 +1,12 @@
 # django-ecommerce
 
 A practice Django e-commerce project:  
-- 100 sample products  
-- Add to cart / remove from cart  
-- Checkout (no payment)  
-- View previous orders  
-- Cart is session‑based  
-- Orders & products persisted to DB  
+- 100 sample products
+- Sortable and paginatable product list
+- Add to cart / remove from cart
+- Checkout (Stripe mock payment)
+- View orders
+- Account login/logout/signup
 
 ---
 
