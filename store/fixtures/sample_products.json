@@ -1,0 +1,110 @@
+[
+  {
+    "model": "store.product",
+    "pk": 1,
+    "fields": {
+      "name": "Red T-Shirt",
+      "description": "Soft cotton t-shirt",
+      "price": "19.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 2,
+    "fields": {
+      "name": "Blue Jeans",
+      "description": "Slim fit denim jeans",
+      "price": "49.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 3,
+    "fields": {
+      "name": "Black Sneakers",
+      "description": "Comfortable everyday sneakers",
+      "price": "79.99"
+    }
+  },
+    {
+    "model": "store.product",
+    "pk": 4,
+    "fields": {
+      "name": "Blue T-Shirt",
+      "description": "Soft cotton t-shirt",
+      "price": "29.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 5,
+    "fields": {
+      "name": "Brown Jeans",
+      "description": "Slim fit jeans",
+      "price": "29.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 6,
+    "fields": {
+      "name": "Purple Sneakers",
+      "description": "Comfortable sneakers",
+      "price": "49.99"
+    }
+  },
+    {
+    "model": "store.product",
+    "pk": 7,
+    "fields": {
+      "name": "Pink T-Shirt",
+      "description": "Soft cotton pink t-shirt",
+      "price": "42.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 8,
+    "fields": {
+      "name": "Green Jeans",
+      "description": "Slim fit denim jeans",
+      "price": "39.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 9,
+    "fields": {
+      "name": "Yello Sneakers",
+      "description": "Comfortable everyday sneakers",
+      "price": "59.99"
+    }
+  },
+    {
+    "model": "store.product",
+    "pk": 10,
+    "fields": {
+      "name": "Lilac T-Shirt",
+      "description": "Soft cotton t-shirt",
+      "price": "9.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 11,
+    "fields": {
+      "name": "Black Jeans",
+      "description": "Slim fit denim jeans",
+      "price": "99.99"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 12,
+    "fields": {
+      "name": "Green Sneakers",
+      "description": "Comfortable everyday sneakers",
+      "price": "34.99"
+    }
+  }
+]
