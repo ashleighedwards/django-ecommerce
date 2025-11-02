@@ -16,7 +16,8 @@ A practice Django e-commerce project:
 - pip  
 - (Optional but recommended) virtual environment  
 - SQLite (default)  
-- Django  
+- Django
+- Stripe
 
 ---
 
