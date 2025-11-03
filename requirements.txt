@@ -1,0 +1,9 @@
+Django>=4.0
+psycopg2-binary
+stripe
+gunicorn
+Pillow          # if you use images (products, avatars, etc.)
+whitenoise      # for serving static files in production
+django-environ  # to manage environment variables easily
+django-bootstrap5
+Faker

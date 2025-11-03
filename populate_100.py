@@ -1,13 +1,11 @@
 """
 This script populates the store app with 100 sample products.
 Run it using:
-    python3 manage.py shell < populate_100_products.py
+    python3 manage.py shell < populate_100.py
 """
 
 import random
 from faker import Faker
-
-# Django setup
 import os
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.settings')
@@ -34,11 +32,15 @@ for _ in range(NUM_PRODUCTS):
     # Generate a random price between $5 and $200
     price = round(random.uniform(5.0, 200.0), 2)
 
+    # Generate a random stock quantity between 1 and 100
+    stock = random.randint(1, 100)
+
     # Save the product to the database
     Product.objects.create(
         name=name,
         description=description,
-        price=price
+        price=price,
+        stock=stock
     )
 
 print(f"{NUM_PRODUCTS} products created successfully!")
