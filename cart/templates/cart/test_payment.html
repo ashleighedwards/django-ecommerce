@@ -6,24 +6,55 @@
 {% block content %}
 <div class="text-center mt-5">
     <h2>Total: £{{ total }}</h2>
+    <form method="post" class="mx-auto" style="max-width:400px;">
+        {% csrf_token %}
 
+        <div class="mb-3">
+            <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
+            {{ user_form.email }}
+            {% for error in user_form.email.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ profile_form.full_name.id_for_label }}" class="form-label">Full Name</label>
+            {{ profile_form.full_name }}
+            {% for error in profile_form.full_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ profile_form.address.id_for_label }}" class="form-label">Address</label>
+            {{ profile_form.address }}
+            {% for error in profile_form.address.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ profile_form.default_shipping }}
+            <label class="form-check-label" for="{{ profile_form.default_shipping.id_for_label }}">
+                Use this as my default shipping address
+            </label>
+        </div>
+    </form>
     <form id="payment-form" class="mx-auto" style="max-width:400px;">
         <div id="card-element" class="mb-3"><!-- Stripe Card Element will appear here --></div>
         <button type="submit" id="submit" class="btn btn-success w-100">
             Pay £{{ total }}
         </button>
     </form>
-
     <div id="payment-message" class="text-danger mt-2"></div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="https://js.stripe.com/v3/"></script>
-    <script>
-        const stripePublicKey = "{{ STRIPE_PUBLIC_KEY }}";
-        const csrfToken = "{{ csrf_token }}";
-        const totalAmount = {{ total }};
-    </script>
-    <script src="{% static 'cart/js/payment.js' %}"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripePublicKey = "{{ STRIPE_PUBLIC_KEY }}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'cart/js/payment.js' %}"></script>
 {% endblock %}
